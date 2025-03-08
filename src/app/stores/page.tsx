@@ -8,7 +8,7 @@ import { Box, Button, Typography, IconButton } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import StoreDialog from "../../components/Dialogs/storeDialog";
+import StoreDialog from "../../components/Dialogs/StoreDialog";
 
 interface Store {
   id: string;
