@@ -10,8 +10,6 @@ export default function PlanningPage() {
   const stores = useSelector((state: RootState) => state.stores.stores);
   const skus = useSelector((state: RootState) => state.skus.skus);
 
-  console.log("🔍 Redux SKUs:", skus);
-  console.log("🔍 Redux Stores:", stores);
 
   // ✅ Sample Planning Data
   const planningData = [

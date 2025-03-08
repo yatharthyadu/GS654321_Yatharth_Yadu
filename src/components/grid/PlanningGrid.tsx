@@ -47,7 +47,7 @@ export default function PlanningGrid({
   planningData,
   calendarData,
 }: PlanningGridProps) {
-  // ✅ Create a map to store sales unit values for quick lookup
+  //  Create a map to store sales unit values for quick lookup
   const planningMap = useMemo(() => {
     const map = new Map();
     planningData.forEach((p) => {
@@ -56,7 +56,7 @@ export default function PlanningGrid({
     return map;
   }, [planningData]);
 
-  // ✅ Create a map of SKU prices and costs for quick lookup
+  //  Create a map of SKU prices and costs for quick lookup
   const skuPriceMap = useMemo(() => {
     const map = new Map();
     skus.forEach((sku) => {
@@ -73,7 +73,7 @@ export default function PlanningGrid({
     return map;
   }, [skus]);
 
-  // ✅ Create Rows: Store + SKU as fixed columns
+  //  Create Rows: Store + SKU as fixed columns
   const gridDataMap = new Map();
 
   console.log("skus", skus);
@@ -154,8 +154,7 @@ export default function PlanningGrid({
         type: "number" as const,
         editable: false,
         valueFormatter: (params: { value: number }) => {
-          const value = params || 0;
-          return `${value.toFixed(1)}%`;
+          return `${Number(params).toFixed(1)}%`;
         },
         cellClassName: (params: GridCellParams) => {
           const value = params.value as number;
