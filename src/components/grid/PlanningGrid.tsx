@@ -4,6 +4,8 @@ import {
   DataGrid,
   GridColDef,
   GridColumnGroupingModel,
+  GridRowModel,
+  GridCellParams,
 } from "@mui/x-data-grid";
 
 interface Store {
@@ -15,6 +17,7 @@ interface Sku {
   id: string;
   name: string;
   price: number;
+  cost: number;
 }
 
 interface PlanningData {
@@ -53,11 +56,19 @@ export default function PlanningGrid({
     return map;
   }, [planningData]);
 
-  // ✅ Create a map of SKU prices for quick lookup
+  // ✅ Create a map of SKU prices and costs for quick lookup
   const skuPriceMap = useMemo(() => {
     const map = new Map();
     skus.forEach((sku) => {
       map.set(sku.id, sku.price);
+    });
+    return map;
+  }, [skus]);
+
+  const skuCostMap = useMemo(() => {
+    const map = new Map();
+    skus.forEach((sku) => {
+      map.set(sku.id, sku.cost);
     });
     return map;
   }, [skus]);
@@ -79,14 +90,21 @@ export default function PlanningGrid({
         });
       }
 
-      // Assign sales units and sales dollars for each week dynamically
+      // Assign sales units, sales dollars and GM dollars for each week dynamically
       calendarData.forEach((week) => {
         const salesUnits =
           planningMap.get(`${store.id}-${sku.id}-${week.week}`) || 0;
         const skuPrice = skuPriceMap.get(sku.id) || 0;
+        const skuCost = skuCostMap.get(sku.id) || 0;
+        const salesDollars = salesUnits * skuPrice;
+        const gmDollars = salesDollars - salesUnits * skuCost;
+        const gmPercentage =
+          salesDollars > 0 ? (gmDollars / salesDollars) * 100 : 0;
+
         gridDataMap.get(rowKey)[`salesUnits-${week.week}`] = salesUnits;
-        gridDataMap.get(rowKey)[`salesDollars-${week.week}`] =
-          salesUnits * skuPrice;
+        gridDataMap.get(rowKey)[`salesDollars-${week.week}`] = salesDollars;
+        gridDataMap.get(rowKey)[`gmDollars-${week.week}`] = gmDollars;
+        gridDataMap.get(rowKey)[`gmPercentage-${week.week}`] = gmPercentage;
       });
     });
   });
@@ -109,13 +127,43 @@ export default function PlanningGrid({
         headerName: "Sales Units",
         flex: 1,
         editable: true,
+        type: "number" as const,
       },
       {
         field: `salesDollars-${week.week}`,
         headerName: "Sales Dollars",
         flex: 1,
+        type: "number" as const,
         valueFormatter: (params: { value: number }) => {
-          return `$${params}`;
+          return `$${params || 0}`;
+        },
+      },
+      {
+        field: `gmDollars-${week.week}`,
+        headerName: "GM Dollars",
+        flex: 1,
+        type: "number" as const,
+        valueFormatter: (params: { value: number }) => {
+          return `$${params || 0}`;
+        },
+      },
+      {
+        field: `gmPercentage-${week.week}`,
+        headerName: "GM %",
+        flex: 1,
+        type: "number" as const,
+        editable: false,
+        valueFormatter: (params: { value: number }) => {
+          const value = params || 0;
+          return `${value.toFixed(1)}%`;
+        },
+        cellClassName: (params: GridCellParams) => {
+          const value = params.value as number;
+          if (value >= 40) return "gm-percentage-high";
+          if (value >= 10) return "gm-percentage-medium";
+          if (value > 5) return "gm-percentage-low";
+          console.log("value", value);
+          return "gm-percentage-critical";
         },
       },
     ])
@@ -141,6 +189,8 @@ export default function PlanningGrid({
       children: [
         { field: `salesUnits-${week.week}` },
         { field: `salesDollars-${week.week}` },
+        { field: `gmDollars-${week.week}` },
+        { field: `gmPercentage-${week.week}` },
       ],
     });
   });
@@ -150,6 +200,34 @@ export default function PlanningGrid({
   // ✅ Final Column List
   const columns: GridColDef[] = [...staticColumns, ...weekColumns];
 
+  // Add processRowUpdate handler
+  const processRowUpdate = (newRow: GridRowModel) => {
+    const [, skuId] = newRow.id.toString().split("-");
+    const updatedRow = { ...newRow };
+
+    // Get SKU price and cost
+    const skuPrice = skuPriceMap.get(skuId) || 0;
+    const skuCost = skuCostMap.get(skuId) || 0;
+
+    // Update calculations for all weeks
+    calendarData.forEach((week) => {
+      const salesUnitsField = `salesUnits-${week.week}`;
+      if (salesUnitsField in newRow) {
+        const salesUnits = Number(newRow[salesUnitsField]) || 0;
+        const salesDollars = salesUnits * skuPrice;
+        const gmDollars = salesDollars - salesUnits * skuCost;
+        const gmPercentage =
+          salesDollars > 0 ? (gmDollars / salesDollars) * 100 : 0;
+
+        updatedRow[`salesDollars-${week.week}`] = salesDollars;
+        updatedRow[`gmDollars-${week.week}`] = gmDollars;
+        updatedRow[`gmPercentage-${week.week}`] = gmPercentage;
+      }
+    });
+
+    return updatedRow;
+  };
+
   return (
     <Box sx={{ height: 600, width: "100%", mt: 3 }}>
       <DataGrid
@@ -157,6 +235,21 @@ export default function PlanningGrid({
         columns={columns}
         pageSizeOptions={[10]}
         columnGroupingModel={columnGroupingModel}
+        processRowUpdate={processRowUpdate}
+        sx={{
+          "& .gm-percentage-high": {
+            backgroundColor: "#e6ffe6",
+          },
+          "& .gm-percentage-medium": {
+            backgroundColor: "#ffffcc",
+          },
+          "& .gm-percentage-low": {
+            backgroundColor: "#ffe6cc",
+          },
+          "& .gm-percentage-critical": {
+            backgroundColor: "#ffcccc",
+          },
+        }}
       />
     </Box>
   );
