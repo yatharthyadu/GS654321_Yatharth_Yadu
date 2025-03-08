@@ -3,19 +3,39 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { addStore, deleteStore } from "@/redux/storesSlice";
-import { Box, Button, TextField, Typography, IconButton } from "@mui/material";
+import { deleteStore } from "@/redux/storesSlice";
+import { Box, Button, Typography, IconButton } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import StoreDialog from "../../components/Dialogs/storeDialog";
+
+interface Store {
+  id: string;
+  name: string;
+  city: string;
+  state: string;
+}
 
 export default function StoresPage() {
   const dispatch = useDispatch();
   const stores = useSelector((state: RootState) => state.stores.stores);
-  const [storeName, setStoreName] = useState("");
-  const [storeCity, setStoreCity] = useState("");
-  const [storeState, setStoreState] = useState("");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedStore, setSelectedStore] = useState<Store | null>(null);
 
+  // Open dialog for adding a new store
+  const handleAddStore = () => {
+    setSelectedStore(null); // No pre-filled data
+    setDialogOpen(true);
+  };
 
+  // Open dialog for editing an existing store
+  const handleEditStore = (store: Store) => {
+    setSelectedStore(store);
+    setDialogOpen(true);
+  };
+
+  // Columns for MUI Data Grid
   const columns: GridColDef[] = [
     { field: "name", headerName: "Store Name", flex: 2 },
     { field: "city", headerName: "City", flex: 1 },
@@ -24,13 +44,18 @@ export default function StoresPage() {
       field: "actions",
       headerName: "Actions",
       sortable: false,
-      width: 100,
+      width: 150,
       renderCell: (params) => (
-        <IconButton
-          onClick={() => dispatch(deleteStore(params.row.id))}
-          color="error">
-          <DeleteIcon />
-        </IconButton>
+        <Box>
+          <IconButton onClick={() => handleEditStore(params.row)} color="info">
+            <EditIcon />
+          </IconButton>
+          <IconButton
+            onClick={() => dispatch(deleteStore(params.row.id))}
+            color="error">
+            <DeleteIcon />
+          </IconButton>
+        </Box>
       ),
     },
   ];
@@ -39,49 +64,15 @@ export default function StoresPage() {
     <Box>
       <Typography variant="h4">Stores</Typography>
 
-   
-      <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
-        <TextField
-          label="Store Name"
-          variant="outlined"
-          value={storeName}
-          onChange={(e) => setStoreName(e.target.value)}
-        />
-        <TextField
-          label="City"
-          variant="outlined"
-          value={storeCity}
-          onChange={(e) => setStoreCity(e.target.value)}
-        />
-        <TextField
-          label="State"
-          variant="outlined"
-          value={storeState}
-          onChange={(e) => setStoreState(e.target.value)}
-        />
-        <Button
-          variant="contained"
-          onClick={() => {
-            if (storeName.trim() && storeCity.trim() && storeState.trim()) {
-              dispatch(
-                addStore({
-                  id: Date.now().toString(),
-                  name: storeName,
-                  city: storeCity,
-                  state: storeState,
-                })
-              );
-              setStoreName("");
-              setStoreCity("");
-              setStoreState("");
-            }
-          }}>
+      {/* Add Store Button */}
+      <Box sx={{ margin: "20px 0" }}>
+        <Button variant="contained" onClick={handleAddStore}>
           Add Store
         </Button>
       </Box>
 
-   
-      <Box sx={{ height: 400, width: "100%", mt: 3 }}>
+      {/* Data Grid */}
+      <Box sx={{ height: 400, width: "100%" }}>
         <DataGrid
           rows={stores}
           columns={columns}
@@ -90,6 +81,13 @@ export default function StoresPage() {
           getRowId={(row) => row.id}
         />
       </Box>
+
+      {/* Store Dialog Component */}
+      <StoreDialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        store={selectedStore}
+      />
     </Box>
   );
 }

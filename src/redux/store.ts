@@ -1,9 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
-import storesReducer from "@/redux/storesSlice"; // Ensure correct path
+import storesReducer from "../redux/storesSlice";
+import skusReducer from "../redux/skusSlice"; 
+
+
 
 export const store = configureStore({
   reducer: {
     stores: storesReducer,
+    skus: skusReducer,
   },
 });
 
