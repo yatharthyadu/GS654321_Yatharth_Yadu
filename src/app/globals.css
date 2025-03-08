@@ -1,4 +1,19 @@
-body{
+body {
   margin: 0;
+}
 
+.green-cell {
+  background-color: #c8e6c9 !important; /* Light green */
+}
+
+.yellow-cell {
+  background-color: #fff9c4 !important; /* Light yellow */
+}
+
+.orange-cell {
+  background-color: #ffe0b2 !important; /* Light orange */
+}
+
+.red-cell {
+  background-color: #ffcdd2 !important; /* Light red */
 }

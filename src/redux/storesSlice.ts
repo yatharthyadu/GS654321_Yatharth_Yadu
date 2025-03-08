@@ -17,9 +17,7 @@ const initialState: StoresState = {
     { id: "ST035", name: "San Francisco Bay Trends", city: "San Francisco", state: "CA" },
     { id: "ST046", name: "Phoenix Sunwear", city: "Phoenix", state: "AZ" },
     { id: "ST064", name: "Dallas Ranch Supply", city: "Dallas", state: "TX" },
-    { id: "ST066", name: "Atlanta Outfitters", city: "Atlanta", state: "GA" },
-    { id: "ST073", name: "Nashville Melody Music Store", city: "Nashville", state: "TN" },
-    { id: "ST074", name: "New York Empire Eats", city: "New York", state: "NY" },
+
   
   ],
 };
