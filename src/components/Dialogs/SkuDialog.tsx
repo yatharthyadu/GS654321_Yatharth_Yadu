@@ -46,20 +46,37 @@ export default function SkuDialog({ open, handleClose, sku }: SkuDialogProps) {
   }, [sku]);
 
   const handleSave = () => {
-    if (skuData.id && skuData.name && skuData.price && skuData.cost) {
-      if (sku) {
-        dispatch(updateSku({ ...skuData }));
-      } else {
-        dispatch(addSku({ ...skuData, id: `SKU${Date.now()}` }));
-      }
-      handleClose();
+    // Validate all required fields
+    if (!skuData.name || !skuData.price || !skuData.cost) {
+      return; // Don't proceed if required fields are empty
     }
+
+    if (sku) {
+      dispatch(updateSku({ ...skuData }));
+    } else {
+      // For new SKUs, ensure we have an ID
+      const newSkuData = {
+        ...skuData,
+        id: skuData.id || `SKU${Date.now()}`,
+      };
+      dispatch(addSku(newSkuData));
+    }
+    handleClose();
   };
 
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>{sku ? "Edit SKU" : "Add SKU"}</DialogTitle>
       <DialogContent>
+        <TextField
+          label="SKU ID"
+          fullWidth
+          margin="dense"
+          value={skuData.id}
+          onChange={(e) => setSkuData({ ...skuData, id: e.target.value })}
+          disabled={!!sku} // Disable editing for existing SKUs
+          placeholder="Leave empty to auto-generate"
+        />
         <TextField
           label="SKU Name"
           fullWidth

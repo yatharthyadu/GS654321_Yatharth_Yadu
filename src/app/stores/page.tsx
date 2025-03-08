@@ -37,6 +37,7 @@ export default function StoresPage() {
 
   // Columns for MUI Data Grid
   const columns: GridColDef[] = [
+    { field: "id", headerName: "Store ID", flex: 1 },
     { field: "name", headerName: "Store Name", flex: 2 },
     { field: "city", headerName: "City", flex: 1 },
     { field: "state", headerName: "State", flex: 1 },
@@ -86,7 +87,7 @@ export default function StoresPage() {
       <StoreDialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
-        store={selectedStore}
+        store={selectedStore || undefined}
       />
     </Box>
   );
