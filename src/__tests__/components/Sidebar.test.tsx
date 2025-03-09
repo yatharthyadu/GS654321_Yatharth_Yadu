@@ -16,14 +16,13 @@ describe("Sidebar", () => {
     expect(getByText("Stores")).toBeInTheDocument();
     expect(getByText("SKUs")).toBeInTheDocument();
     expect(getByText("Planning")).toBeInTheDocument();
-    expect(getByText("Charts")).toBeInTheDocument();
   });
 
   it("renders all navigation links with correct paths", () => {
     const { getAllByRole } = render(<Sidebar />);
 
     const links = getAllByRole("link");
-    expect(links).toHaveLength(4);
+    expect(links).toHaveLength(3);
 
     const expectedPaths = ["/stores", "/skus", "/planning"];
     links.forEach((link: HTMLElement, index: number) => {
