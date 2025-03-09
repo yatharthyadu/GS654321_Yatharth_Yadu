@@ -80,13 +80,7 @@ src/
 
 The project uses Jest and React Testing Library for testing. Tests are located in the `__tests__` directory.
 
-## 🔐 Environment Variables
 
-Create a `.env.local` file in the root directory with the following variables:
-
-```env
-# Add your environment variables here
-```
 
 ## 📈 Performance
 
