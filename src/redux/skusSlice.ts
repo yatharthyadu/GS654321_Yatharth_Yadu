@@ -13,8 +13,8 @@ interface SkusState {
 
 const initialState: SkusState = {
   skus: [
-    { id: "SKU001", name: "Wireless Bluetooth Headphones", price: 129, cost: 80 },
-    { id: "SKU002", name: "Smartwatch with Fitness Tracker", price: 199, cost: 120 },
+    { id: "SKU001", name: "Crew Neck Merino Wool Sweater", price: 129, cost: 80 },
+    { id: "SKU002", name: "Faux Leather Leggings", price: 199, cost: 120 },
   ],
 };
 

@@ -1,8 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
-import storesReducer from "../redux/storesSlice";
-import skusReducer from "../redux/skusSlice"; 
-
-
+import storesReducer from "./storesSlice";
+import skusReducer from "./skusSlice";
 
 export const store = configureStore({
   reducer: {

@@ -113,13 +113,13 @@ export default function PlanningGrid({
 
   console.log("gridData", gridData);
 
-  // ✅ Define Static Columns (Store & SKU)
+  //  Define Static Columns (Store & SKU)
   const staticColumns: GridColDef[] = [
     { field: "storeName", headerName: "Store", flex: 2 },
     { field: "skuName", headerName: "SKU", flex: 2 },
   ];
 
-  // ✅ Define Dynamic Sales Unit and Sales Dollars Columns (Nested inside Weeks)
+  // Define Dynamic Sales Unit and Sales Dollars Columns (Nested inside Weeks)
   const weekColumns: GridColDef[] = calendarData
     .map((week) => [
       {
@@ -168,7 +168,7 @@ export default function PlanningGrid({
     ])
     .flat();
 
-  // ✅ Define Column Grouping: Weeks inside Months, Sales Units & Dollars inside Weeks
+  //  Define Column Grouping: Weeks inside Months, Sales Units & Dollars inside Weeks
   const columnGroupingModel: GridColumnGroupingModel = [];
 
   const groupedMonths = new Map();
@@ -196,7 +196,7 @@ export default function PlanningGrid({
 
   columnGroupingModel.push(...Array.from(groupedMonths.values()));
 
-  // ✅ Final Column List
+  //  Final Column List
   const columns: GridColDef[] = [...staticColumns, ...weekColumns];
 
   // Add processRowUpdate handler

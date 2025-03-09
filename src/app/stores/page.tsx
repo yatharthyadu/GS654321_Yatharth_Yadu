@@ -62,18 +62,26 @@ export default function StoresPage() {
   ];
 
   return (
-    <Box>
-      <Typography variant="h4">Stores</Typography>
+    <Box
+      sx={{
+        minWidth: "992px",
+        maxWidth: "100%",
+        padding: "24px",
+        margin: "0 auto",
+      }}>
+      <Typography variant="h4" sx={{ mb: 3 }}>
+        Stores
+      </Typography>
 
       {/* Add Store Button */}
-      <Box sx={{ margin: "20px 0" }}>
+      <Box sx={{ mb: 3 }}>
         <Button variant="contained" onClick={handleAddStore}>
           Add Store
         </Button>
       </Box>
 
       {/* Data Grid */}
-      <Box sx={{ height: 400, width: "100%" }}>
+      <Box sx={{ height: 400 }}>
         <DataGrid
           rows={stores}
           columns={columns}
