@@ -1,6 +1,6 @@
-# Inventory Management System
+# Retail Management System
 
-A modern, responsive inventory management system built with Next.js, Material-UI, and Redux Toolkit. The application features complex data handling with MUI Data Grid, offering a seamless user experience for managing SKUs, stores, and planning.
+A modern, responsive Retail management system built with Next.js, Material-UI, and Redux Toolkit. The application features complex data handling with MUI Data Grid, offering a seamless user experience for managing SKUs, stores, and planning.
 
 ## 🚀 Features
 
